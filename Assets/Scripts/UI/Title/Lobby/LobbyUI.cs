@@ -8,15 +8,12 @@ public class LobbyUI : UIComponent
 
     public override void Appear(Action Callback = null)
     {
-        _joinBtn.gameObject.SetActive(true);
-        _createRoomBtn.gameObject.SetActive(true);
+        this.gameObject.SetActive(true);
     }
 
     public override void Disappear(Action Callback = null)
     {
-        _joinBtn.gameObject.SetActive(false);
-        _createRoomBtn.gameObject.SetActive(false);
-
+        this.gameObject.SetActive(false);
     }
 
     public override void Init(params object[] param)

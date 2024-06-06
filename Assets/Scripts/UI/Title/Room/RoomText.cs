@@ -1,18 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
-public class RoomText : MonoBehaviour
+public class RoomText : PoolableMono
 {
-    // Start is called before the first frame update
-    void Start()
+    private TextMeshProUGUI _text;
+
+    public override void Init()
     {
-        
+        _text = GetComponent<TextMeshProUGUI>();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SetText(string text)
     {
-        
+        if(text.Length > 8) text = text.Substring(0,8);
+        _text.SetText($"{text}");
+
+        Debug.Log($"Text: {text}");
     }
 }

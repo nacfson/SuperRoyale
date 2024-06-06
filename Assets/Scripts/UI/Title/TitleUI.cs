@@ -1,8 +1,8 @@
-using UnityEngine.UI;
 using TMPro;
 using UnityEngine;
 using System.Collections.Generic;
 using System;
+using Photon.Realtime;
 
 public class TitleUI : UIComponent
 {
@@ -36,13 +36,13 @@ public class TitleUI : UIComponent
 
     private void UpdateStateText(string text) => _stateText.SetText(text);
 
-    private void JoinedLobby()
+    private void JoinedRoom(Player localPlayer)
     {
         _componentDictionary["Room"].Appear();
         _componentDictionary["Lobby"].Disappear();
     }
 
-    private void JoinedRoom()
+    private void JoinedLobby()
     {
         _componentDictionary["Room"].Disappear();
         _componentDictionary["Lobby"].Appear();

@@ -13,12 +13,26 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public event NetworkEventListener<string> OnNetworkStateChangeEvent;
     public event NetworkEventListener OnJoinedLobbyEvent;
-    public event NetworkEventListener OnJoinedRoomEvent;
+    public event NetworkEventListener<Player> OnJoinedRoomEvent;
     public event NetworkEventListener<Player> OnPlayerJoinedEvent;
+    public event NetworkEventListener<bool> OnPlayerReadyEvent;
 
     public static NetworkManager Instance;
 
     private PhotonView _PV;
+
+    private bool _isReady;
+    public bool IsReady
+    {
+        get => _isReady;
+        set
+        {
+            _isReady = value;
+            _PV.RPC("ReadyGame_RPC",RpcTarget.MasterClient);
+        }
+    }
+
+    private int _readyPlayerCount;
 
 
     private void Awake()
@@ -30,15 +44,46 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         PhotonNetwork.ConnectUsingSettings();
     }
 
+    #region MyMethod
     public void CreateRoom()
     {
-        PhotonNetwork.CreateRoom(Random.Range(0000, 9999).ToString());
+        string roomName = Random.Range(0000, 9999).ToString();
+        RoomOptions options = new RoomOptions();
+        options.PublishUserId = true;
+
+        PhotonNetwork.CreateRoom(roomName,options);
+    }
+
+    public void ReadyGame()
+    {
+        _isReady = !_isReady;
+        _PV.RPC("ReadyGame_RPC",RpcTarget.MasterClient);
+    }
+
+    [PunRPC]
+    public void ReadyGame_RPC()
+    {
+        _readyPlayerCount++;
     }
 
     public void JoinRoom()
     {
         PhotonNetwork.JoinRandomRoom();
     }
+
+
+    public void StartGame()
+    {
+
+    }
+
+    public void LeaveRoom()
+    {
+        PhotonNetwork.LeaveRoom();
+    }
+    #endregion
+
+    #region PhotonMethod
 
     public override void OnConnectedToMaster()
     {
@@ -54,17 +99,18 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         OnNetworkStateChangeEvent?.Invoke("OnJoinedLobby");
     }
 
-
-
     //JoinRoom 했을 때 플레이어 이름 뜨도록 만들어야함
     public override void OnJoinedRoom()
     {
         Debug.Log("OnJoinedRoom");
-
-        OnJoinedRoomEvent?.Invoke();
+        OnJoinedRoomEvent?.Invoke(PhotonNetwork.LocalPlayer);
         OnNetworkStateChangeEvent?.Invoke("OnJoinedRoom");
 
+        _isReady = false;
+        OnPlayerReadyEvent?.Invoke(_isReady);
     }
+
+
     public override void OnMasterClientSwitched(Player newMasterClient)
     {
 
@@ -73,15 +119,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         string text = $"Room Creation Failed {message}";
         OnNetworkStateChangeEvent?.Invoke("OnCreateRoomFailed");
+    }
 
-    }
-    public void StartGame()
-    {
-    }
-    public void LeaveRoom()
-    {
-        PhotonNetwork.LeaveRoom();
-    }
+
     public override void OnLeftRoom()
     {
 
@@ -99,5 +139,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         {
             OnPlayerJoinedEvent?.Invoke(newPlayer);
         }
+
+        _isReady = false;
+        OnPlayerReadyEvent?.Invoke(_isReady);
     }
+    #endregion 
 }
