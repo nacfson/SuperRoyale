@@ -6,14 +6,14 @@ using UnityEngine;
 public class StateMachine<T> : IInitable
 {
     public T Owner { get; private set; }
-    private Dictionary<Type,State> _stateDictionary = new Dictionary<Type,State>();
-    private State _currentState;
+    private Dictionary<Type,State<T>> _stateDictionary = new Dictionary<Type,State<T>>();
+    private State<T> _currentState;
 
     public void Init(params object[] param)
     {
         _stateDictionary.Clear();
 
-        _stateDictionary.Add(typeof(State),new PlayerMoveState(this));
+        _stateDictionary.Add(typeof(State<T>),new PlayerMoveState(this as StateMachine<PlayerController>));
     }
 
     public void UpdateState()

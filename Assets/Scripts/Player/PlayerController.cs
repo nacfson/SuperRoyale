@@ -6,12 +6,12 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     private PhotonView _PV;
-    private InputReader _inputReader;
-    private CharacterController _controller;
-    private Vector2 _inputValue;
+    public InputReader InputReader {get;private set; }
+    public CharacterController Controller {get; private set; }
 
+
+    private StateMachine<PlayerController> _stateMachine;
     private List<PlayerModule> _moduleList;
-    public bool RotateEnable { get; private set; }
     public bool IsMine => _PV.IsMine;
     
     private void Awake()
@@ -21,14 +21,10 @@ public class PlayerController : MonoBehaviour
 
     private void Init()
     {
-
-        _inputReader = GameManager.Instance.InputReader;
+        _stateMachine = new StateMachine<PlayerController>();
+        InputReader = GameManager.Instance.InputReader;
         _PV = GetComponent<PhotonView>();
-        _controller = GetComponent<CharacterController>();
-
-        _inputReader.OnMovementEvent += SetInputValue;
-        _inputReader.OnRClickEvent += CalculateRotation;
-
+        Controller = GetComponent<CharacterController>();
 
         _moduleList = new List<PlayerModule>();
         GetComponentsInChildren(_moduleList);
@@ -38,47 +34,27 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         if (!IsMine) return;
-        if(RotateEnable)
-        {
-            Vector3 mousePos = GameManager.Instance.CurrentMousePos;
-            transform.rotation = Quaternion.LookRotation(mousePos);
-        }
+
     }
 
     private void FixedUpdate()
     {
         if (!IsMine) return;
 
-        Vector3 movement = CalculateMovement();
-        _controller.Move(movement);
+
     }
 
-    private void SetInputValue(Vector2 velocity)
+    public M GetPlayerModule<M>() where M : PlayerModule
     {
-        _inputValue = velocity;
-    }
-
-    private Vector3 CalculateMovement()
-    {
-        Vector3 movement;
-
-        Vector2 inputValue = (_inputValue) * Time.fixedDeltaTime;
-        float moveSpeed = 8f;
-        //Quaternion rotateQuat = Quaternion.Euler(0f, transform.eulerAngles.y, 0f);
-        Quaternion rotateQuat = Quaternion.Euler(Vector3.forward);
-
-        movement = rotateQuat *
-            new Vector3(inputValue.x * moveSpeed,
-                0,
-                inputValue.y * moveSpeed);
-
-        return movement;
-    }
-
-    private void CalculateRotation(bool isDown)
-    {
-        RotateEnable = isDown;
-
+        foreach(PlayerModule module in _moduleList)
+        {
+            if(module is M findModule)
+            {
+                return findModule;
+            }
+        }
+        Debug.LogError($"Can't Find module in moduleList: {_moduleList.Count}");
+        return null;
     }
 }
 
