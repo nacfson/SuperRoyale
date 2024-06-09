@@ -32,6 +32,8 @@ public class TitleUI : UIComponent
         NetworkManager.Instance.OnNetworkStateChangeEvent += UpdateStateText;
         NetworkManager.Instance.OnJoinedLobbyEvent += JoinedLobby;
         NetworkManager.Instance.OnJoinedRoomEvent += JoinedRoom;
+
+        NetworkManager.Instance.OnGameStartEvent += () => Disappear();
     }
 
     private void UpdateStateText(string text) => _stateText.SetText(text);
@@ -50,9 +52,11 @@ public class TitleUI : UIComponent
 
     public override void Appear(Action Callback = null)
     {
+        gameObject.SetActive(true);
     }
 
     public override void Disappear(Action Callback = null)
     {
+        gameObject.SetActive(false);
     }
 }

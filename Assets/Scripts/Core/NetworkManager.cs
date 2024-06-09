@@ -5,6 +5,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using System;
 using Random = UnityEngine.Random;
+using Photon.Pun.Demo.Cockpit;
 
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
@@ -13,38 +14,74 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public event NetworkEventListener<string> OnNetworkStateChangeEvent;
     public event NetworkEventListener OnJoinedLobbyEvent;
+
     public event NetworkEventListener<Player> OnJoinedRoomEvent;
     public event NetworkEventListener<Player> OnPlayerJoinedEvent;
-    public event NetworkEventListener<bool> OnPlayerReadyEvent;
+
+    public event NetworkEventListener OnPlayerLeftEvent;
+    public event NetworkEventListener OnGameStartEvent;
 
     public static NetworkManager Instance;
 
-    private PhotonView _PV;
+    public PhotonView PV {get; private set; }
 
-    private bool _isReady;
-    public bool IsReady
-    {
-        get => _isReady;
-        set
-        {
-            _isReady = value;
-            _PV.RPC("ReadyGame_RPC",RpcTarget.MasterClient);
-        }
-    }
 
-    private int _readyPlayerCount;
-
+    public int ReadyCount { get; private set; }
+    public int PlayerCount { get; private set; }
 
     private void Awake()
     {
         Instance = this;
 
-        _PV = GetComponent<PhotonView>();
-        Debug.Log("Connecting To Master");
+        PV = GetComponent<PhotonView>();
         PhotonNetwork.ConnectUsingSettings();
     }
 
     #region MyMethod
+
+    [PunRPC]
+    public void ReadyPlayer_RPC(int actorNumber, bool isReady)
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            if(isReady)
+            {
+                ReadyCount++;
+            }
+            else
+            {
+                ReadyCount--;
+            }
+
+            ReadyCheck();
+        }
+    }
+
+    [PunRPC]
+    public void StartGame_RPC()
+    {
+        OnGameStartEvent?.Invoke();
+    }
+
+    public bool ReadyCheck()
+    {
+        if (ReadyCount == PlayerCount)
+        {
+            RPCShooter(nameof(StartGame_RPC), RpcTarget.All);
+            return true;
+        }
+        else if (ReadyCount > PlayerCount)
+        {
+            Debug.LogError("Ready is multiplied!");
+        }
+        return false;
+    }
+
+    public void RPCShooter(string methodName,RpcTarget target, params object[] param)
+    {
+        PV.RPC(methodName, target, param);
+    }
+
     public void CreateRoom()
     {
         string roomName = Random.Range(0000, 9999).ToString();
@@ -54,27 +91,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         PhotonNetwork.CreateRoom(roomName,options);
     }
 
-    public void ReadyGame()
-    {
-        _isReady = !_isReady;
-        _PV.RPC("ReadyGame_RPC",RpcTarget.MasterClient);
-    }
-
-    [PunRPC]
-    public void ReadyGame_RPC()
-    {
-        _readyPlayerCount++;
-    }
-
     public void JoinRoom()
     {
         PhotonNetwork.JoinRandomRoom();
-    }
-
-
-    public void StartGame()
-    {
-
     }
 
     public void LeaveRoom()
@@ -89,6 +108,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("OnConnectedToMaster");
         PhotonNetwork.JoinLobby(TypedLobby.Default);
+        PhotonNetwork.AutomaticallySyncScene = true;
 
         OnNetworkStateChangeEvent?.Invoke("OnConnectedToMaster");
     }
@@ -105,9 +125,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         Debug.Log("OnJoinedRoom");
         OnJoinedRoomEvent?.Invoke(PhotonNetwork.LocalPlayer);
         OnNetworkStateChangeEvent?.Invoke("OnJoinedRoom");
-
-        _isReady = false;
-        OnPlayerReadyEvent?.Invoke(_isReady);
+        PlayerCount = PhotonNetwork.PlayerList.Count();
     }
 
 
@@ -124,7 +142,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     public override void OnLeftRoom()
     {
-
+        OnPlayerLeftEvent?.Invoke();
+        PlayerCount--;
     }
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
@@ -139,9 +158,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         {
             OnPlayerJoinedEvent?.Invoke(newPlayer);
         }
-
-        _isReady = false;
-        OnPlayerReadyEvent?.Invoke(_isReady);
+        PlayerCount++;
     }
     #endregion 
 }

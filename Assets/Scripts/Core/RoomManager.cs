@@ -14,40 +14,50 @@ public enum GAME_STATE
 }
 
 
-public class RoomManager : MonoBehaviourPunCallbacks
+public class RoomManager : MonoSingleton<RoomManager>, IInstanceable
 {
-    public static RoomManager Instance;
+    public GAME_STATE GameState { get; private set; }
+    public bool IsReady { get; private set; }
 
-    private PhotonView _PV;
+    public event Action OnGameStart;
 
-    private void Awake()
+    public void CreateInstance()
+    { 
+        NetworkManager.Instance.OnPlayerLeftEvent += UnReadyGame;
+        NetworkManager.Instance.OnGameStartEvent += StartGame;
+    }
+
+    private void StartGame()
     {
-        if (Instance == null)
+        if(PhotonNetwork.IsMasterClient)
         {
-            Instance = this;
+            int curSceneIndex = SceneManager.GetActiveScene().buildIndex;
+            PhotonNetwork.LoadLevel(curSceneIndex + 1);
         }
-        else
-        {
-            Destroy(this.gameObject);
-            return;
-        }
-        DontDestroyOnLoad(this.gameObject);
-        _PV = GetComponent<PhotonView>();
     }
 
-    public override void OnEnable()
+    public void ReadyGame()
     {
-        base.OnEnable();
-        SceneManager.sceneLoaded += OnSceneLoaded;
+        IsReady = true;
+        int actorNumber = PhotonNetwork.LocalPlayer.ActorNumber;
+
+
+        NetworkManager.Instance.RPCShooter(nameof(NetworkManager.Instance.ReadyPlayer_RPC),
+            RpcTarget.All, actorNumber, true);
     }
 
-    public override void OnDisable()
+    public void UnReadyGame()
     {
-        base.OnDisable();
-        SceneManager.sceneLoaded -= OnSceneLoaded;
+        IsReady = false;
+        int actorNumber = PhotonNetwork.LocalPlayer.ActorNumber;
+
+
+        NetworkManager.Instance.RPCShooter(nameof(NetworkManager.Instance.ReadyPlayer_RPC),
+            RpcTarget.All, actorNumber, false);
     }
 
-    private void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
+    public void ChangeGameState(GAME_STATE gameState)
     {
+        GameState = gameState;
     }
 }
