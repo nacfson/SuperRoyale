@@ -1,14 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem.XR;
 
 public class PlayerMoveState : PlayerState
 {
-    private Vector2 _inputValue;
+    private static Vector2 _inputValue;
+    private static float _verticalVelocity;
+
     private PlayerMovementModule _movementModule;
 
-    public bool RotateEnable { get; private set; }
 
     public PlayerMoveState(StateMachine<PlayerController> machine) : base(machine)
     {
@@ -18,29 +17,33 @@ public class PlayerMoveState : PlayerState
     public override void EnterState()
     {
         _inputReader.OnMovementEvent += SetInputValue;
-        _inputReader.OnRClickEvent += CalculateRotation;
+        _inputReader.OnRClickEvent += ChangeToAim;
     }
 
     public override void ExitState()
     {
         _inputReader.OnMovementEvent -= SetInputValue;
-        _inputReader.OnRClickEvent -= CalculateRotation;
+        _inputReader.OnRClickEvent -= ChangeToAim;
     }
 
     public override void UpdateState()
     {
-        if (RotateEnable)
-        {
-            Vector3 mousePos = GameManager.Instance.CurrentMousePos;
-            Transform.rotation = Quaternion.LookRotation(mousePos);
-        }
+        Vector3 mousePos = CameraManager.Instance.GetMousePos(1 << Define.GroundLayer) - Transform.position;
+        mousePos.y = 0f;
+        
+        
+        Transform.rotation = Quaternion.LookRotation(mousePos);
     }
 
     public override void FixedUpdateState()
     {
         base.FixedUpdateState();
-
-        Vector3 movement = _movementModule.CalculateMovement(_inputValue);
+        
+        if(!_movementModule.IsGrounded)
+        {
+            _verticalVelocity = _movementModule.CalculateGravity(_verticalVelocity * 0.1f);
+        }
+        Vector3 movement = _movementModule.CalculateMovement(_inputValue) + Vector3.up * _verticalVelocity;
         _movementModule.CharacterController.Move(movement);
     }
 
@@ -49,8 +52,11 @@ public class PlayerMoveState : PlayerState
         _inputValue = velocity;
     }
 
-    private void CalculateRotation(bool isDown)
+    private void ChangeToAim(bool isDown)
     {
-        RotateEnable = isDown;
+        if(isDown)
+        {
+            _machine.ChangeState(typeof(PlayerAimState));
+        }
     }
 }

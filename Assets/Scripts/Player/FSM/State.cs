@@ -1,13 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public abstract class State<T>
+public abstract class State<T> : IState
 {
     protected StateMachine<T> _machine;
     public State(StateMachine<T> machine)
     {
-        _machine = machine;
     }
 
     public abstract void EnterState();
@@ -15,6 +15,4 @@ public abstract class State<T>
     public abstract void UpdateState();
     public virtual void FixedUpdateState()
     { }
-
-
 }
