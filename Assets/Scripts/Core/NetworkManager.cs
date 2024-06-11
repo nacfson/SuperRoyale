@@ -40,6 +40,13 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     #region MyMethod
 
     [PunRPC]
+    public void NetworkCreate_RPC(string name)
+    {
+        PoolableMono obj = PoolManager.Instance.Pop(name);
+        ObjectManager.Instance.AddMono(obj);
+    }
+
+    [PunRPC]
     public void ReadyPlayer_RPC(int actorNumber, bool isReady)
     {
         if (PhotonNetwork.IsMasterClient)

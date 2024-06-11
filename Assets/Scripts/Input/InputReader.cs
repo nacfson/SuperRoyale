@@ -15,6 +15,7 @@ public class InputReader : ScriptableObject, InputControls.IMAKActions
 
     public event InputEventListener<Vector2> OnMovementEvent = null;
     public event InputEventListener<Vector2> OnMouseMoveEvent = null;
+    public event InputEventListener OnShootEvent = null;
     public event InputEventListener<bool> OnRClickEvent = null;
 
     private void OnEnable()
@@ -61,6 +62,10 @@ public class InputReader : ScriptableObject, InputControls.IMAKActions
 
     void InputControls.IMAKActions.OnShoot(InputAction.CallbackContext context)
     {
+        if(context.performed)
+        {
+            OnShootEvent?.Invoke();
+        }
     }
 
     void InputControls.IMAKActions.OnAim(InputAction.CallbackContext context)

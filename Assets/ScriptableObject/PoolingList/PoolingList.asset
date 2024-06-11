@@ -13,6 +13,12 @@ MonoBehaviour:
   m_Name: PoolingList
   m_EditorClassIdentifier: 
   pairs:
+  - prefab: {fileID: 6069893286716269730, guid: db6aa1dd309d2904593a8697e6560132,
+      type: 3}
+    count: 5
+  - prefab: {fileID: 5649545558226455836, guid: d12097ce3c216604c8624a2da1c02260,
+      type: 3}
+    count: 5
   - prefab: {fileID: -1376644345367613914, guid: 0ff2cda84688c2a489ecac94d5ae9c6c,
       type: 3}
     count: 5
