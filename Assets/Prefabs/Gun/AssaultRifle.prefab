@@ -99,7 +99,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   poolingCount: 5
   _weaponData: {fileID: 11400000, guid: 3cec6cf563090914aa4c32133c42a140, type: 2}
-  _gunData: {fileID: 11400000, guid: 3cec6cf563090914aa4c32133c42a140, type: 2}
+  <GunData>k__BackingField: {fileID: 11400000, guid: 3cec6cf563090914aa4c32133c42a140,
+    type: 2}
   _muzzleTrm: {fileID: 9207906721539280872}
   <UseBullet>k__BackingField: {fileID: 6069893286716269730, guid: db6aa1dd309d2904593a8697e6560132,
     type: 3}
@@ -128,7 +129,7 @@ Transform:
   m_GameObject: {fileID: 7728404788949491487}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.175, z: 1.109}
+  m_LocalPosition: {x: 0, y: 0.175, z: 2.149}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

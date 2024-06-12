@@ -28,17 +28,20 @@ public class Gun : Weapon<GunData>
 
     }
 
-    public override void Setting(PlayerController controller)
+    public void Reload()
     {
-        base.Setting(controller);
-
         CurrentBullet = GunData.MaxBullet;
-        EventManager.AddListener<BulletShootingEvent>(ShootBullet);
-
 
         var cntEvent = Events.BulletCntEvent;
         cntEvent.Setting(CurrentBullet, GunData.MaxBullet);
         EventManager.Broadcast(cntEvent);
+    }
+    public override void Setting(PlayerController controller)
+    {
+        base.Setting(controller);
+
+        Reload();
+        EventManager.AddListener<BulletShootingEvent>(ShootBullet);
     }
 
     public override void Attack()
@@ -52,15 +55,15 @@ public class Gun : Weapon<GunData>
         
         //can await this
         Vector3 mousePos = CameraManager.Instance.GetMousePos(1 << Define.GroundLayer);
-        Vector3 bulletDir = mousePos - _owner.transform.position;
+        Vector3 bulletDir = (mousePos - _owner.transform.position).normalized;
 
         _owner.CreateEvent(RpcTarget.All,EventType.Bullet,_muzzleTrm.position, bulletDir);
+
+        CurrentBullet--;
 
         var cntEvent = Events.BulletCntEvent;
         cntEvent.Setting(CurrentBullet, GunData.MaxBullet);
         EventManager.Broadcast(cntEvent);
-
-        CurrentBullet--;
     }
 
     private void ShootBullet(BulletShootingEvent Event)
@@ -69,3 +72,5 @@ public class Gun : Weapon<GunData>
         bullet.Setting(Event.pos, Event.dir);
     }
 }
+
+

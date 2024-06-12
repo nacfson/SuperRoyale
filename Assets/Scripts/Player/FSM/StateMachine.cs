@@ -25,7 +25,7 @@ public class StateMachine : IInitable
 
         _stateDictionary.Add(typeof(PlayerMoveState), new PlayerMoveState(this));
         _stateDictionary.Add(typeof(PlayerAimState), new PlayerAimState(this));
-
+        _stateDictionary.Add(typeof(PlayerReloadState), new PlayerReloadState(this));
 
         ChangeState(typeof(PlayerMoveState));
     }

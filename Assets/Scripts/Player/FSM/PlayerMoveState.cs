@@ -52,7 +52,7 @@ public class PlayerMoveState : PlayerState
         _inputValue = velocity;
     }
 
-    private void ChangeToAim(bool isDown)
+    protected void ChangeToAim(bool isDown)
     {
         if(isDown)
         {

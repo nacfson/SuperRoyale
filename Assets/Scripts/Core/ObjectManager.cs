@@ -11,9 +11,9 @@ public class ObjectManager : MonoSingleton<ObjectManager>, IInstanceable
 
     public PoolableMono CreatedMono { get; private set; }
 
+
     public void AddMono(PoolableMono mono)
     {
         CreatedMono = mono;
     }
-
 }

@@ -8,6 +8,8 @@ public class PlayerAimState : PlayerMoveState
 {
     private PlayerWeaponModule _weaponModule;
     private bool _enabled = false;
+
+
     public PlayerAimState(StateMachine machine) : base(machine)
     {
         _weaponModule = machine.Owner.GetPlayerModule<PlayerWeaponModule>();
@@ -39,22 +41,18 @@ public class PlayerAimState : PlayerMoveState
         //CameraManager.Instance.SetCameraTrack(false);
     }
 
-    public void Reload()
-    {
-        _machine.Owner.StartCoroutine(ReloadCoroutine());
-    }
-
-    private IEnumerator ReloadCoroutine(Action Callback = null)
-    {
-        _enabled = false;
-        yield return new WaitForSeconds(_weaponModule.GunData.ReloadTime);
-        _enabled = true;
-    }
 
     private void Shoot()
     {
         if (!_enabled) return;
-        _weaponModule.Shoot();
+        if (_weaponModule.CanShoot)
+        {
+            _weaponModule.Shoot();
+        }
+        else
+        {
+            _machine.ChangeState(typeof(PlayerReloadState));
+        }
     }
 
     private void ChangeToMove(bool isFalse)

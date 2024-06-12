@@ -120,3 +120,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   poolingCount: 5
   _bulletData: {fileID: 11400000, guid: cb3cec5da4731c7468b55424fbd9b7ce, type: 2}
+  _layerMask:
+    serializedVersion: 2
+    m_Bits: 384

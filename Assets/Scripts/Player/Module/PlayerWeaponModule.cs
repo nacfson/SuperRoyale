@@ -6,6 +6,7 @@ public class PlayerWeaponModule : PlayerModule
 {
     private Gun _currentWeapon;
     public GunData GunData => _currentWeapon.GunData;
+    public bool CanShoot => _currentWeapon.CurrentBullet > 0;
 
     public override void Init(params object[] param)
     {
@@ -18,5 +19,10 @@ public class PlayerWeaponModule : PlayerModule
     public void Shoot()
     {
         _currentWeapon.Attack();
+    }
+
+    public void Reload()
+    {
+        _currentWeapon.Reload();
     }
 }

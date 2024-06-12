@@ -4,5 +4,6 @@ using UnityEngine;
 
 public interface IDamageable
 {
+    public int CurrentHP { get; set; }
     public void Damage(int damage);
 }

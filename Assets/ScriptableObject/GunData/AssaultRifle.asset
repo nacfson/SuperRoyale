@@ -18,4 +18,4 @@ MonoBehaviour:
   eBulletType: 0
   MaxBullet: 30
   ShootBulletCnt: 1
-  ReloadSpeed: 3
+  ReloadTime: 3

@@ -5,13 +5,16 @@ using UnityEngine;
 public class Bullet : PoolableMono
 {
     [SerializeField] protected BulletData _bulletData;
+    [SerializeField] private LayerMask _layerMask;
+    private SphereCollider _collider;
+
     private Vector3 _bulletDirection;
 
     public bool Enabled { get; private set; }
 
     public override void Init()
     {
-
+        _collider = GetComponent<SphereCollider>();
     }
 
     public void Setting(Vector3 pos, Vector3 dir)
@@ -26,15 +29,27 @@ public class Bullet : PoolableMono
         if(Enabled)
         {
             transform.position += _bulletDirection * _bulletData.MoveSpeed * Time.deltaTime;
+
+            if(CollisionCheck(out RaycastHit hit))
+            {
+                if(hit.collider.TryGetComponent(out IDamageable damageable))
+                {
+                    damageable.Damage(_bulletData.Damage);
+                }
+                ParticleMono testParticle = PoolManager.Instance.Pop("TestParticle") as ParticleMono;
+                testParticle.Setting(hit.point);
+
+                PoolManager.Instance.Push(this);
+            }
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    private bool CollisionCheck(out RaycastHit hit)
     {
-        if(other.TryGetComponent(out IDamageable damageable))
-        {
-            damageable.Damage(_bulletData.Damage);
-            PoolManager.Instance.Push(this);
-        }
+        Vector3 pos = transform.position;
+        float radius = _collider.radius;
+
+        var result = Physics.SphereCast(pos - _bulletDirection, radius, _bulletDirection, out hit, _bulletDirection.magnitude, _layerMask);
+        return result;
     }
 }
