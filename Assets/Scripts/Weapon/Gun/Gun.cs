@@ -1,14 +1,14 @@
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Gun : Weapon<GunData>
 {
-    [SerializeField] private GunData _gunData;
+    [field: SerializeField] public GunData GunData {get; private set; }
     [SerializeField] private Transform _muzzleTrm;
 
-    private Transform _ownerTrm;
 
     private int _currentBullet;
     public int CurrentBullet
@@ -16,7 +16,7 @@ public class Gun : Weapon<GunData>
         get => _currentBullet;
         set
         {
-            _currentBullet = Mathf.Clamp(value,0,_gunData.MaxBullet);
+            _currentBullet = Mathf.Clamp(value,0,GunData.MaxBullet);
         }
     }
 
@@ -25,43 +25,47 @@ public class Gun : Weapon<GunData>
 
     public override void Init()
     {
-        CurrentBullet = _gunData.MaxBullet;
+
     }
 
-    public void Setting(Transform agentTrm)
+    public override void Setting(PlayerController controller)
     {
-        _ownerTrm = agentTrm;
+        base.Setting(controller);
+
+        CurrentBullet = GunData.MaxBullet;
+        EventManager.AddListener<BulletShootingEvent>(ShootBullet);
+
+
+        var cntEvent = Events.BulletCntEvent;
+        cntEvent.Setting(CurrentBullet, GunData.MaxBullet);
+        EventManager.Broadcast(cntEvent);
     }
 
     public override void Attack()
     {
+        if (!_owner.IsMine) return;
+
         string name = $"{EBullet.Default}Bullet";
         string methodName = nameof(NetworkManager.Instance.NetworkCreate_RPC);
 
-        NetworkManager.Instance.RPCShooter(methodName, RpcTarget.All, name);
-
-        StartCoroutine(Test());
-        return;
-        Bullet bullet = ObjectManager.Instance.CreatedMono as Bullet;
-
+        NetworkManager.Instance.RPCShooter(methodName, RpcTarget.All, name, _muzzleTrm.position);
+        
+        //can await this
         Vector3 mousePos = CameraManager.Instance.GetMousePos(1 << Define.GroundLayer);
-        Vector3 bulletDir = mousePos - _ownerTrm.position;
-        bullet.Setting(_muzzleTrm.position,bulletDir);
+        Vector3 bulletDir = mousePos - _owner.transform.position;
+
+        _owner.CreateEvent(RpcTarget.All,EventType.Bullet,_muzzleTrm.position, bulletDir);
+
+        var cntEvent = Events.BulletCntEvent;
+        cntEvent.Setting(CurrentBullet, GunData.MaxBullet);
+        EventManager.Broadcast(cntEvent);
 
         CurrentBullet--;
     }
 
-    private IEnumerator Test()
+    private void ShootBullet(BulletShootingEvent Event)
     {
-        yield return new WaitForSeconds(1f);
-        Bullet bullet = ObjectManager.Instance.CreatedMono.GetComponent<Bullet>();
-
-        Vector3 mousePos = CameraManager.Instance.GetMousePos(1 << Define.GroundLayer);
-        Vector3 bulletDir = mousePos - _ownerTrm.position;
-        bullet.Setting(_muzzleTrm.position, bulletDir);
-
-        CurrentBullet--;
+        Bullet bullet = ObjectManager.Instance.CreatedMono as Bullet;
+        bullet.Setting(Event.pos, Event.dir);
     }
-
-
 }

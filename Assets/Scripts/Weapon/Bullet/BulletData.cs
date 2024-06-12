@@ -6,6 +6,6 @@ using UnityEngine;
 public class BulletData : ScriptableObject
 {
     public float MoveSpeed;
-    public float Damage;
+    public int Damage;
     public float MaxDistance;
 }

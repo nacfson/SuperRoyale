@@ -28,4 +28,13 @@ public class Bullet : PoolableMono
             transform.position += _bulletDirection * _bulletData.MoveSpeed * Time.deltaTime;
         }
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.TryGetComponent(out IDamageable damageable))
+        {
+            damageable.Damage(_bulletData.Damage);
+            PoolManager.Instance.Push(this);
+        }
+    }
 }

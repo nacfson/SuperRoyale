@@ -9,7 +9,7 @@ public class PlayerMoveState : PlayerState
     private PlayerMovementModule _movementModule;
 
 
-    public PlayerMoveState(StateMachine<PlayerController> machine) : base(machine)
+    public PlayerMoveState(StateMachine machine) : base(machine)
     {
         _movementModule = _machine.Owner.GetPlayerModule<PlayerMovementModule>();
     }

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public abstract class State<T> : IState
+public abstract class State : IState
 {
-    protected StateMachine<T> _machine;
-    public State(StateMachine<T> machine)
+    protected StateMachine _machine;
+    public State(StateMachine machine)
     {
     }
 

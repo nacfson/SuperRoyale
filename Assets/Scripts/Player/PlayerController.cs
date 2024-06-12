@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+
 public enum EPLAYER_DATA
 {
     Default,
@@ -16,7 +17,7 @@ public class PlayerController : MonoBehaviour
     public CharacterController Controller {get; private set; }
 
 
-    private StateMachine<PlayerController> _stateMachine;
+    private StateMachine _stateMachine;
     private List<PlayerModule> _moduleList;
 
 
@@ -49,7 +50,7 @@ public class PlayerController : MonoBehaviour
         GetComponentsInChildren(_moduleList);
         _moduleList.ForEach(module => module.Init(this));
 
-        _stateMachine = new StateMachine<PlayerController>(this);
+        _stateMachine = new StateMachine(this);
 
         ChangePlayerData(EPLAYER_DATA.Default);
     }
@@ -83,7 +84,7 @@ public class PlayerController : MonoBehaviour
     {
         if(!_playerDataDictionary.ContainsKey(eData))
         {
-            string name = $"{eData.ToString()}Data";
+            string name = $"{eData}Data";
 
             PlayerData playerData = _dataList.Find(n => n.name == name);
             if(playerData != null)
@@ -91,8 +92,24 @@ public class PlayerController : MonoBehaviour
                 _playerDataDictionary.Add(eData, playerData);
             }
         }
-
         CurrentPlayerData = _playerDataDictionary[eData];
     }
+
+
+    public void CreateEvent(RpcTarget target, EventType type ,params object[] param)
+    {
+        RPCShooter(nameof(ShootingEvent),RpcTarget.All,(int)type,param);
+    }
+
+    [PunRPC]
+    public void ShootingEvent(int eventType,params object[] param)
+    {
+        var gameEvent = Events.GetEvent((EventType)eventType);
+        gameEvent.Setting(param);
+
+        EventManager.Broadcast(gameEvent);
+    }
+
+    private void RPCShooter(string methodName, RpcTarget target, params object[] param) => _PV.RPC(methodName, target, param);
 }
 

@@ -32,6 +32,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     private void Awake()
     {
         Instance = this;
+        DontDestroyOnLoad(this.gameObject);
 
         PV = GetComponent<PhotonView>();
         PhotonNetwork.ConnectUsingSettings();
@@ -40,10 +41,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     #region MyMethod
 
     [PunRPC]
-    public void NetworkCreate_RPC(string name)
+    public void NetworkCreate_RPC(string name,Vector3 pos)
     {
+        Debug.Log("NetworkCreate_RPC");
         PoolableMono obj = PoolManager.Instance.Pop(name);
         ObjectManager.Instance.AddMono(obj);
+        obj.transform.position = pos;
     }
 
     [PunRPC]

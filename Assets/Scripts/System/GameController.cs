@@ -22,11 +22,7 @@ public class GameController : MonoBehaviour
 
 
         CameraManager.Instance.SetFollowTarget(player.transform);
-    }
-
-
-    private Vector3 GetSpawnPoint()
-    {
-        return Vector3.zero;
+        var component = UIManager.Instance.GetUIComponent<InGameUI>();
+        UIManager.Instance.AppearUI(component);
     }
 }

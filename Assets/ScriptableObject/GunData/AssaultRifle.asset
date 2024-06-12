@@ -16,3 +16,6 @@ MonoBehaviour:
   Damage: 7
   ChangeSpeed: 2.5
   eBulletType: 0
+  MaxBullet: 30
+  ShootBulletCnt: 1
+  ReloadSpeed: 3
