@@ -57,7 +57,7 @@ public class Gun : Weapon<GunData>
         Vector3 mousePos = CameraManager.Instance.GetMousePos(1 << Define.GroundLayer);
         Vector3 bulletDir = (mousePos - _owner.transform.position).normalized;
 
-        _owner.CreateEvent(RpcTarget.All,EventType.Bullet,_muzzleTrm.position, bulletDir);
+        NetworkManager.Instance.CreateEvent(RpcTarget.All,EventType.Bullet,_muzzleTrm.position, bulletDir);
 
         CurrentBullet--;
 

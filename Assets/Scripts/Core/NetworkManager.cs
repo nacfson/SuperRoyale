@@ -41,9 +41,17 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     #region MyMethod
 
     [PunRPC]
+    public void ShootingEvent_RPC(int eventType, params object[] param)
+    {
+        var gameEvent = Events.GetEvent((EventType)eventType);
+        gameEvent.Setting(param);
+
+        EventManager.Broadcast(gameEvent);
+    }
+
+    [PunRPC]
     public void NetworkCreate_RPC(string name,Vector3 pos)
     {
-        Debug.Log("NetworkCreate_RPC");
         PoolableMono obj = PoolManager.Instance.Pop(name);
         ObjectManager.Instance.AddMono(obj);
         obj.transform.position = pos;
@@ -72,6 +80,12 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     {
         OnGameStartEvent?.Invoke();
     }
+
+    public void CreateEvent(RpcTarget target, EventType type, params object[] param)
+    {
+        RPCShooter(nameof(ShootingEvent_RPC), RpcTarget.All, (int)type, param);
+    }
+
 
     public bool ReadyCheck()
     {

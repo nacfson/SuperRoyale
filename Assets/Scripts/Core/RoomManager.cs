@@ -19,12 +19,16 @@ public class RoomManager : MonoSingleton<RoomManager>, IInstanceable
     public GAME_STATE GameState { get; private set; }
     public bool IsReady { get; private set; }
 
+    public Dictionary<int, PlayerController> PlayerDictionary { get; private set; }
     public event Action OnGameStart;
+
 
     public void CreateInstance()
     { 
         NetworkManager.Instance.OnPlayerLeftEvent += UnReadyGame;
         NetworkManager.Instance.OnGameStartEvent += StartGame;
+
+        PlayerDictionary = new Dictionary<int, PlayerController>();
     }
 
     private void StartGame()

@@ -4,17 +4,17 @@ using UnityEngine;
 
 public abstract class PlayerModule : MonoBehaviour, IInitable
 {
-    protected PlayerController _playerController;
+    protected PlayerController _owner;
     public virtual void Init(params object[] param)
     {
         if(param.Length > 0)
         {
             if (param[0] is PlayerController controller)
             {
-                _playerController = controller;
+                _owner = controller;
             }
         }
 
-        if (_playerController == null) Debug.LogError($"Controller is null! : param length: {param.Length}");
+        if (_owner == null) Debug.LogError($"Controller is null! : param length: {param.Length}");
     }
 }

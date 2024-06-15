@@ -31,7 +31,6 @@ public class PlayerReloadState : PlayerMoveState
         while(timer <= reloadTime)
         {
             timer += Time.deltaTime;
-            Debug.Log($"timer: {timer}");
             yield return null;
         }
         _weaponModule.Reload();

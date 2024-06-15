@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -32,13 +33,15 @@ public class Bullet : PoolableMono
 
             if(CollisionCheck(out RaycastHit hit))
             {
-                if(hit.collider.TryGetComponent(out IDamageable damageable))
+                if (PhotonNetwork.IsMasterClient)
                 {
-                    damageable.Damage(_bulletData.Damage);
+                    if (hit.collider.TryGetComponent(out PlayerController controller))
+                    {
+                        NetworkManager.Instance.CreateEvent(RpcTarget.All,EventType.Damage, controller.ActorNumber, _bulletData.Damage);
+                    }
                 }
                 ParticleMono testParticle = PoolManager.Instance.Pop("TestParticle") as ParticleMono;
                 testParticle.Setting(hit.point);
-
                 PoolManager.Instance.Push(this);
             }
         }

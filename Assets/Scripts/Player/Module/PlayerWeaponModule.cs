@@ -12,8 +12,8 @@ public class PlayerWeaponModule : PlayerModule
     {
         base.Init(param);
 
-        _currentWeapon = _playerController.GetComponentInChildren<Gun>();
-        _currentWeapon.Setting(_playerController);
+        _currentWeapon = _owner.GetComponentInChildren<Gun>();
+        _currentWeapon.Setting(_owner);
     }
 
     public void Shoot()

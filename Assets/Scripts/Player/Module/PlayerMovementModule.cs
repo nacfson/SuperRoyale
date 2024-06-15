@@ -12,7 +12,7 @@ public class PlayerMovementModule : PlayerModule
     public override void Init(params object[] param)
     {
         base.Init(param);
-        CharacterController = _playerController.Controller;
+        CharacterController = _owner.Controller;
     }
 
     public Vector3 CalculateMovement(Vector2 movementInput)
@@ -20,7 +20,7 @@ public class PlayerMovementModule : PlayerModule
         Vector3 movement;
 
         Vector2 inputValue = (movementInput) * Time.fixedDeltaTime;
-        float moveSpeed = _playerController.CurrentPlayerData.MoveSpeed;
+        float moveSpeed = _owner.CurrentPlayerData.MoveSpeed;
         //Quaternion rotateQuat = Quaternion.Euler(0f, transform.eulerAngles.y, 0f);
         Quaternion rotateQuat = Quaternion.Euler(Vector3.forward);
 

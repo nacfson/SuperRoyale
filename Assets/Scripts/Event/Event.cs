@@ -4,17 +4,20 @@ public enum EventType
 {
     Bullet,
     BulletCnt,
+    Damage,
 }
 
 public static class Events
 {
     public static BulletShootingEvent BulletShootingEvent = new BulletShootingEvent();
-    public static BulletCntEvent BulletCntEvent = new BulletCntEvent();
+    public static BulletCntEvent BulletCntEvent           = new BulletCntEvent();
+    public static DamageEvent DamageEvent                 = new DamageEvent();
 
     private static Dictionary<EventType, GameEvent> s_eventDictioanry = new Dictionary<EventType, GameEvent>()
     {
         {EventType.Bullet,BulletShootingEvent },
         {EventType.BulletCnt, BulletCntEvent},
+        {EventType.Damage, DamageEvent},
     };
 
     public static GameEvent GetEvent(EventType type)
@@ -37,11 +40,13 @@ public class BulletCntEvent : GameEvent
 
 public class DamageEvent : GameEvent
 {
-    public float damage;
+    public int actorNumber;
+    public int damage;
 
     public override void Setting(params object[] param)
     {
-
+        actorNumber = (int)param[0];
+        damage = (int)param[1];
     }
 }
 

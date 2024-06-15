@@ -1,4 +1,5 @@
 using Photon.Pun;
+using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,8 @@ public enum EPLAYER_DATA
 public class PlayerController : MonoBehaviour
 {
     private PhotonView _PV;
+
+    public int ActorNumber { get; set; }
     [field:SerializeField] public InputReader InputReader {get;private set; }
     public CharacterController Controller {get; private set; }
 
@@ -33,13 +36,8 @@ public class PlayerController : MonoBehaviour
             return _PV.IsMine;
         }
     }
-    
-    private void Awake()
-    {
-        Init();
-    }
 
-    private void Init()
+    public void Init()
     {
         InputReader = GameManager.Instance.InputReader;
         _PV = GetComponent<PhotonView>();
@@ -53,6 +51,9 @@ public class PlayerController : MonoBehaviour
         _stateMachine = new StateMachine(this);
 
         ChangePlayerData(EPLAYER_DATA.Default);
+        ActorNumber = _PV.OwnerActorNr;
+
+        RoomManager.Instance.PlayerDictionary.Add(ActorNumber, this);
     }
 
     private void Update()
@@ -94,22 +95,5 @@ public class PlayerController : MonoBehaviour
         }
         CurrentPlayerData = _playerDataDictionary[eData];
     }
-
-
-    public void CreateEvent(RpcTarget target, EventType type ,params object[] param)
-    {
-        RPCShooter(nameof(ShootingEvent),RpcTarget.All,(int)type,param);
-    }
-
-    [PunRPC]
-    public void ShootingEvent(int eventType,params object[] param)
-    {
-        var gameEvent = Events.GetEvent((EventType)eventType);
-        gameEvent.Setting(param);
-
-        EventManager.Broadcast(gameEvent);
-    }
-
-    private void RPCShooter(string methodName, RpcTarget target, params object[] param) => _PV.RPC(methodName, target, param);
 }
 
