@@ -339,7 +339,19 @@ MonoBehaviour:
   _maxHP: 20
   OnPlayerDeadEvent:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6863815331215412067}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1459856165400326674
 GameObject:
   m_ObjectHideFlags: 0
@@ -370,8 +382,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6469526993323928255}
-  - {fileID: 9120829837148227252}
   - {fileID: 6338377295056442650}
+  - {fileID: 9120829837148227252}
   m_Father: {fileID: 8689677794810729499}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1513269318827202788
@@ -1465,7 +1477,6 @@ GameObject:
   - component: {fileID: 4448493049362974907}
   - component: {fileID: 4112205708062453555}
   - component: {fileID: 307350904388221159}
-  - component: {fileID: -233402880483457237}
   m_Layer: 8
   m_Name: DefaultPlayer
   m_TagString: Untagged
@@ -1572,34 +1583,6 @@ MonoBehaviour:
   _dataList:
   - {fileID: 11400000, guid: f397ca44aa3ec044cbee8c812d6daa66, type: 2}
   - {fileID: 11400000, guid: f4616f7cc570a904d873bfc2e8c6d586, type: 2}
---- !u!114 &-233402880483457237
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6863815331215412067}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9749f193f58b88d4ba1fdc968e054f3a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _maxHP: 20
-  OnPlayerDeadEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 6863815331215412067}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!1 &6882878248919142042
 GameObject:
   m_ObjectHideFlags: 0

@@ -15,14 +15,13 @@ public class PlayerController : MonoBehaviour
 {
     private PhotonView _PV;
 
-    public int ActorNumber { get; set; }
+    public int ActorNumber => _PV.Owner.ActorNumber;
     [field:SerializeField] public InputReader InputReader {get;private set; }
     public CharacterController Controller {get; private set; }
 
 
     private StateMachine _stateMachine;
     private List<PlayerModule> _moduleList;
-
 
     [SerializeField] private List<PlayerData> _dataList;
     public PlayerData CurrentPlayerData {get;private set; }
@@ -51,8 +50,6 @@ public class PlayerController : MonoBehaviour
         _stateMachine = new StateMachine(this);
 
         ChangePlayerData(EPLAYER_DATA.Default);
-        ActorNumber = _PV.OwnerActorNr;
-
         RoomManager.Instance.PlayerDictionary.Add(ActorNumber, this);
     }
 

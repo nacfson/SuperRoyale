@@ -17,6 +17,7 @@ public class InputReader : ScriptableObject, InputControls.IMAKActions
     public event InputEventListener<Vector2> OnMouseMoveEvent = null;
     public event InputEventListener OnShootEvent = null;
     public event InputEventListener<bool> OnRClickEvent = null;
+    public event InputEventListener OnRollEvent = null;
 
     private void OnEnable()
     {
@@ -42,6 +43,10 @@ public class InputReader : ScriptableObject, InputControls.IMAKActions
 
     void InputControls.IMAKActions.OnRoll(InputAction.CallbackContext context)
     {
+        if(context.performed)
+        {
+            OnRollEvent?.Invoke();
+        }
     }
 
     void InputControls.IMAKActions.OnLClick(InputAction.CallbackContext context)

@@ -13,3 +13,6 @@ MonoBehaviour:
   m_Name: DefaultData
   m_EditorClassIdentifier: 
   MoveSpeed: 8
+  RollTime: 0.3
+  RollCoolTime: 3
+  RollPower: 15

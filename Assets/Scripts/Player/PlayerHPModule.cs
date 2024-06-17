@@ -28,6 +28,8 @@ public class PlayerHPModule : PlayerModule
 
     private void Damage(DamageEvent damageEvent)
     {
+        if (damageEvent.actorNumber.Equals(_owner.ActorNumber) == false) return;
+
         CurrentHP -= damageEvent.damage;
 
         if (CurrentHP < 1)

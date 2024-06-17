@@ -42,6 +42,7 @@ public class Gun : Weapon<GunData>
 
         Reload();
         EventManager.AddListener<BulletShootingEvent>(ShootBullet);
+        //controller.gameObject.SetActive(false);
     }
 
     public override void Attack()

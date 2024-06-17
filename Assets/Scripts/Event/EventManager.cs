@@ -14,9 +14,9 @@ public abstract class GameEvent : IEventSetting
 
 public static class EventManager
 {
-    static readonly Dictionary<Type, Action<GameEvent>> s_Events = new Dictionary<Type, Action<GameEvent>>();
+    private static readonly Dictionary<Type, Action<GameEvent>> s_Events = new Dictionary<Type, Action<GameEvent>>();
 
-    static readonly Dictionary<Delegate, Action<GameEvent>> s_EventLookups =
+    private static readonly Dictionary<Delegate, Action<GameEvent>> s_EventLookups =
         new Dictionary<Delegate, Action<GameEvent>>();
 
     public static void AddListener<T>(Action<T> evt) where T : GameEvent
@@ -33,6 +33,8 @@ public static class EventManager
                 s_Events[typeof(T)] = newAction;
 
         }
+
+        Debug.LogError("AddListener");
     }
 
     public static void RemoveListener<T>(Action<T> evt) where T : GameEvent
@@ -58,7 +60,6 @@ public static class EventManager
             action.Invoke(evt);
 
         Debug.Log($"BroadCast:{evt}");
-
     }
 
     public static void Clear()

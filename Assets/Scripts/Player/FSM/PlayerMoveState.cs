@@ -18,12 +18,14 @@ public class PlayerMoveState : PlayerState
     {
         _inputReader.OnMovementEvent += SetInputValue;
         _inputReader.OnRClickEvent += ChangeToAim;
+        _inputReader.OnRollEvent += Roll;
     }
 
     public override void ExitState()
     {
         _inputReader.OnMovementEvent -= SetInputValue;
         _inputReader.OnRClickEvent -= ChangeToAim;
+        _inputReader.OnRollEvent -= Roll;
     }
 
     public override void UpdateState()
@@ -58,5 +60,10 @@ public class PlayerMoveState : PlayerState
         {
             _machine.ChangeState(typeof(PlayerAimState));
         }
+    }
+
+    protected void Roll()
+    {
+        _movementModule.IsRoll = true;
     }
 }

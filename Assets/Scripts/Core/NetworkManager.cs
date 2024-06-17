@@ -70,7 +70,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             {
                 ReadyCount--;
             }
-
             ReadyCheck();
         }
     }
