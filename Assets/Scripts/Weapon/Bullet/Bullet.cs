@@ -40,9 +40,9 @@ public class Bullet : PoolableMono
                         NetworkManager.Instance.CreateEvent(RpcTarget.All,EventType.Damage, controller.ActorNumber, _bulletData.Damage);
                     }
                 }
-                ParticleMono testParticle = PoolManager.Instance.Pop("TestParticle") as ParticleMono;
+                ParticleMono testParticle = PoolManager.Singleton.Pop("TestParticle") as ParticleMono;
                 testParticle.Setting(hit.point);
-                PoolManager.Instance.Push(this);
+                PoolManager.Singleton.Push(this);
             }
         }
     }

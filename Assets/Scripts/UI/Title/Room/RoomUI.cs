@@ -32,7 +32,7 @@ public class RoomUI : UIComponent
             for(int i = 0; i <  _contentTrm.childCount; i++)
             {
                 if (_contentTrm.GetChild(i).TryGetComponent(out RoomText text))
-                    PoolManager.Instance.Push(text);
+                    PoolManager.Singleton.Push(text);
             }
         }
 
@@ -42,7 +42,7 @@ public class RoomUI : UIComponent
         Debug.Log($"PlayerCount: {players.Length}");
         foreach (Player player in players)
         {
-            RoomText roomText = PoolManager.Instance.Pop("RoomText") as RoomText;
+            RoomText roomText = PoolManager.Singleton.Pop("RoomText") as RoomText;
 
             roomText.SetText(player.UserId.ToString());
             roomText.transform.SetParent(_contentTrm);

@@ -4,22 +4,22 @@ using UnityEngine;
 
 public abstract class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
 {
-    private static T _instance;
-    public static T Instance
+    private static T _singleton;
+    public static T Singleton
     {
         get
         {
-            if (_instance == null)
+            if (_singleton == null)
             {
-                _instance = GameObject.FindObjectOfType(typeof(T)) as T;
+                _singleton = GameObject.FindObjectOfType(typeof(T)) as T;
             }
 
-            if (_instance == null)
+            if (_singleton == null)
             {
                 Debug.LogError("Can't Find Instance!");
             }
 
-            return _instance;
+            return _singleton;
         }
     }
 

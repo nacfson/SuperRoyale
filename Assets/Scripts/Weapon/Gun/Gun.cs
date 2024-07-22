@@ -55,7 +55,7 @@ public class Gun : Weapon<GunData>
         NetworkManager.Instance.RPCShooter(methodName, RpcTarget.All, name, _muzzleTrm.position);
         
         //can await this
-        Vector3 mousePos = CameraManager.Instance.GetMousePos(1 << Define.GroundLayer);
+        Vector3 mousePos = CameraManager.Singleton.GetMousePos(1 << Define.GroundLayer);
         Vector3 bulletDir = (mousePos - _owner.transform.position).normalized;
 
         NetworkManager.Instance.CreateEvent(RpcTarget.All,EventType.Bullet,_muzzleTrm.position, bulletDir);
@@ -69,7 +69,7 @@ public class Gun : Weapon<GunData>
 
     private void ShootBullet(BulletShootingEvent Event)
     {
-        Bullet bullet = ObjectManager.Instance.CreatedMono as Bullet;
+        Bullet bullet = ObjectManager.Singleton.CreatedMono as Bullet;
         bullet.Setting(Event.pos, Event.dir);
     }
 }

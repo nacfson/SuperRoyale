@@ -36,7 +36,7 @@ public class CameraManager : MonoSingleton<CameraManager>, IInstanceable
 
     public void CreateInstance()
     {
-        GameManager.Instance.InputReader.OnMouseMoveEvent += SetMousePos;
+        GameManager.Singleton.InputReader.OnMouseMoveEvent += SetMousePos;
     }
 
     public void SetFollowTarget(Transform target)

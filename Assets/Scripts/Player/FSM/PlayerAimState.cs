@@ -24,7 +24,7 @@ public class PlayerAimState : PlayerMoveState
 
         _machine.Owner.ChangePlayerData(EPLAYER_DATA.Aim);
 
-        CameraManager.Instance.ZoomCamera(10f);
+        CameraManager.Singleton.ZoomCamera(10f);
         //CameraManager.Instance.SetCameraTrack(true);
     }
 
@@ -37,7 +37,7 @@ public class PlayerAimState : PlayerMoveState
 
 
         _machine.Owner.ChangePlayerData(EPLAYER_DATA.Default);
-        CameraManager.Instance.ZoomCamera(15f);
+        CameraManager.Singleton.ZoomCamera(15f);
         //CameraManager.Instance.SetCameraTrack(false);
     }
 

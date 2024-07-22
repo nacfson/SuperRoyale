@@ -30,7 +30,7 @@ public class PlayerMoveState : PlayerState
 
     public override void UpdateState()
     {
-        Vector3 mousePos = CameraManager.Instance.GetMousePos(1 << Define.GroundLayer) - Transform.position;
+        Vector3 mousePos = CameraManager.Singleton.GetMousePos(1 << Define.GroundLayer) - Transform.position;
         mousePos.y = 0f;
         
         

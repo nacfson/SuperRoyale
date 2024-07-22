@@ -38,7 +38,7 @@ public class PlayerController : MonoBehaviour
 
     public void Init()
     {
-        InputReader = GameManager.Instance.InputReader;
+        InputReader = GameManager.Singleton.InputReader;
         _PV = GetComponent<PhotonView>();
         Controller = GetComponent<CharacterController>();
 
@@ -49,8 +49,15 @@ public class PlayerController : MonoBehaviour
 
         _stateMachine = new StateMachine(this);
 
+        RoomManager.Singleton.PlayerDictionary.Add(ActorNumber, this);
+
+        Revive();
+    }
+
+    public void Revive()
+    {
+        _stateMachine.ChangeState(typeof(PlayerMoveState));
         ChangePlayerData(EPLAYER_DATA.Default);
-        RoomManager.Instance.PlayerDictionary.Add(ActorNumber, this);
     }
 
     private void Update()

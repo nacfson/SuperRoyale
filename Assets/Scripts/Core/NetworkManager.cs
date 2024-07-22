@@ -52,8 +52,8 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public void NetworkCreate_RPC(string name,Vector3 pos)
     {
-        PoolableMono obj = PoolManager.Instance.Pop(name);
-        ObjectManager.Instance.AddMono(obj);
+        PoolableMono obj = PoolManager.Singleton.Pop(name);
+        ObjectManager.Singleton.AddMono(obj);
         obj.transform.position = pos;
     }
 

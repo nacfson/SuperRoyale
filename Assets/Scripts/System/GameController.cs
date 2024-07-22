@@ -15,9 +15,9 @@ public class GameController : MonoBehaviour
         //player.Init();
         //can await
 
-        CameraManager.Instance.SetFollowTarget(player.transform);
-        var component = UIManager.Instance.GetUIComponent<InGameUI>();
-        UIManager.Instance.AppearUI(component);
+        CameraManager.Singleton.SetFollowTarget(player.transform);
+        var component = UIManager.Singleton.GetUIComponent<InGameUI>();
+        UIManager.Singleton.AppearUI(component);
 
         Invoke(nameof(GameStart), 1f);
     }
